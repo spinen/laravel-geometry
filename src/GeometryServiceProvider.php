@@ -29,7 +29,7 @@ class GeometryServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('geometry', function ($app) {
-            return $app->make(Geometry::class);
+            return $app->make(Geometry::class, $app);
         });
     }
 }
