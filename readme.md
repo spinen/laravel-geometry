@@ -36,6 +36,15 @@ Add the Service Provider to `config/app.php`:
     ];
 ```
 
+[Optional] Add the Facade to `config/app.php`:
+
+```php
+    'aliases' => [
+        // ...
+        'Geometry' => Spinen\Geometry\GeometryFacade::class,
+    ];
+```
+
 ## Using the package
 
 The Geometry Class exposes parseType methods where "Type" is StudlyCase of the geometry type that geoPHP supports.  Here is a full list...
