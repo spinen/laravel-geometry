@@ -3,9 +3,11 @@
 namespace Spinen\Geometry;
 
 use ArrayAccess as Application;
+use geoPHP;
 use Illuminate\Contracts\Events\Dispatcher as Events;
 use Illuminate\Support\ServiceProvider;
 use Mockery;
+use Spinen\Geometry\Support\TypeMapper;
 
 class GeometryServiceProviderTest extends TestCase
 {
@@ -22,7 +24,17 @@ class GeometryServiceProviderTest extends TestCase
     /**
      * @var Mockery\Mock
      */
+    protected $geo_php_mock;
+
+    /**
+     * @var Mockery\Mock
+     */
     protected $geometry_mock;
+
+    /**
+     * @var Mockery\Mock
+     */
+    protected $mapper_mock;
 
     /**
      * @var ServiceProvider
@@ -52,6 +64,10 @@ class GeometryServiceProviderTest extends TestCase
                                ->andReturn($this->events_mock);
 
         $this->geometry_mock = Mockery::mock(Geometry::class);
+
+        $this->geo_php_mock = Mockery::mock(geoPHP::class);
+
+        $this->mapper_mock = Mockery::mock(TypeMapper::class);
     }
 
     /**
@@ -73,7 +89,11 @@ class GeometryServiceProviderTest extends TestCase
                                ->once()
                                ->withAnyArgs([
                                    Geometry::class,
-                                   $this->application_mock,
+                                   [
+                                       $this->geo_php_mock,
+                                       $this->mapper_mock,
+                                       $this->application_mock,
+                                   ],
                                ])
                                ->andReturn($this->geometry_mock);
 

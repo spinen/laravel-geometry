@@ -2,7 +2,9 @@
 
 namespace Spinen\Geometry;
 
+use geoPHP;
 use Illuminate\Support\ServiceProvider;
+use Spinen\Geometry\Support\TypeMapper;
 
 /**
  * Class GeometryServiceProvider
@@ -29,7 +31,7 @@ class GeometryServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('geometry', function ($app) {
-            return $app->make(Geometry::class, $app);
+            return $app->make(Geometry::class, [new geoPHP(), new TypeMapper(), $app]);
         });
     }
 }
