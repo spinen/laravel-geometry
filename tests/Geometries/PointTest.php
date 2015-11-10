@@ -48,5 +48,3 @@ class PointTest extends TestCase
         $this->assertInstanceOf(Point::class, $this->geometry);
     }
 }
-
-
