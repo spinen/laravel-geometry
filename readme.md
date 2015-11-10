@@ -21,7 +21,7 @@ Wrapper over the geoPHP Class to make it integrate with Laravel better.
 
 ## Install
 
-Install Garbage Man:
+Install Geometry:
 
 ```bash
     $ composer require spinen/laravel-geometry
@@ -35,3 +35,21 @@ Add the Service Provider to `config/app.php`:
         Spinen\Geometry\GeometryServiceProvider::class,
     ];
 ```
+
+## Using the package
+
+The Geometry Class exposes parseType methods where "Type" is StudlyCase of the geometry type that geoPHP supports.  Here is a full list...
+
+* parseEwkb
+* parseEwkt
+* parseGeoHash
+* parseGeoJson
+* parseGeoRss
+* parseGoogleGeocode
+* parseGpx
+* parseJson
+* parseKml
+* parseWkb
+* parseWkt
+
+They each return the geoPHP class for the geometry specified in the data passed in the method.
