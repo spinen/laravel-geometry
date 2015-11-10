@@ -4,8 +4,9 @@ namespace Spinen\Geometry;
 
 use Exception;
 use geoPHP;
-use InvalidArgumentException;
+use Illuminate\Contracts\Foundation\Application;
 use RuntimeException;
+use Spinen\Geometry\Support\TypeMapper;
 
 /**
  * Class Geometry
@@ -27,6 +28,13 @@ use RuntimeException;
 class Geometry
 {
     /**
+     * The Laravel application.
+     *
+     * @var Application|null
+     */
+    protected $app;
+
+    /**
      * Instance of geoPHP.
      *
      * @var geoPHP
@@ -34,32 +42,24 @@ class Geometry
     protected $geoPhp;
 
     /**
-     * Supported geometry types.
+     * Instance of TypeMapper.
      *
-     * @var array
+     * @var TypeMapper
      */
-    protected $types = [
-        'Ewkb'          => 'ewkb',
-        'Ewkt'          => 'ewkt',
-        'GeoHash'       => 'geohash',
-        'GeoJson'       => 'geojson',
-        'GeoRss'        => 'georss',
-        'GoogleGeocode' => 'google_geocode',
-        'Gpx'           => 'gpx',
-        'Json'          => 'json',
-        'Kml'           => 'kml',
-        'Wkb'           => 'wkb',
-        'Wkt'           => 'wkt',
-    ];
+    protected $mapper;
 
     /**
      * Geometry constructor.
      *
-     * @param geoPHP $geoPhp
+     * @param geoPHP           $geoPhp
+     * @param TypeMapper       $mapper
+     * @param Application|null $app
      */
-    public function __construct(geoPHP $geoPhp)
+    public function __construct(geoPHP $geoPhp, TypeMapper $mapper, $app = null)
     {
         $this->geoPhp = $geoPhp;
+        $this->mapper = $mapper;
+        $this->app = $app;
     }
 
     /**
@@ -75,7 +75,8 @@ class Geometry
      */
     public function __call($name, $arguments)
     {
-        if (preg_match("/parse(.+)/u", $name, $parts) && 1 === count($arguments)) {
+        // Sugar to make parse<Format>() work
+        if (preg_match("/^parse([A-Z][A-z]*)/u", $name, $parts) && 1 === count($arguments)) {
             return $this->parse($arguments[0], $parts[1]);
         }
 
@@ -83,22 +84,15 @@ class Geometry
     }
 
     /**
-     * StudlyCase of the method name.
+     * Build the name to the proxy geometry class.
      *
-     * Look it up in the types to make sure that it is defined & map it to the string that geoPHP expects.
-     *
-     * @param string $type
+     * @param $geometry
      *
      * @return string
-     * @throws InvalidArgumentException
      */
-    protected function convertType($type)
+    protected function buildGeometryClassName($geometry)
     {
-        if (in_array($type, array_keys($this->types))) {
-            return $this->types[$type];
-        }
-
-        throw new InvalidArgumentException(sprintf("Unknown geometry type of [%s] was provided.", $type));
+        return __NAMESPACE__ . '\Geometries\\' . get_class($geometry);
     }
 
     /**
@@ -112,6 +106,15 @@ class Geometry
      */
     protected function parse($data, $type)
     {
-        return $this->geoPhp->load($data, $this->convertType($type));
+        $geometry = $this->geoPhp->load($data, $this->mapper->map($type));
+
+        $geometry_class = $this->buildGeometryClassName($geometry);
+
+        // If running in Laravel, then use the IoC
+        if (!is_null($this->app)) {
+            return $this->app->make($geometry_class, [$geometry, $this->mapper]);
+        }
+
+        return new $geometry_class($geometry, $this->mapper);
     }
 }
