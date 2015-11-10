@@ -48,5 +48,3 @@ class MultiLineStringTest extends TestCase
         $this->assertInstanceOf(MultiLineString::class, $this->geometry);
     }
 }
-
-
