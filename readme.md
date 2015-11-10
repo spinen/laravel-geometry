@@ -41,7 +41,7 @@ Add the Service Provider to `config/app.php`:
 ```php
     'aliases' => [
         // ...
-        'Geometry' => Spinen\Geometry\GeometryFacade::class,
+        'Geo' => Spinen\Geometry\GeometryFacade::class,
     ];
 ```
 
