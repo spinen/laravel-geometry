@@ -41,7 +41,7 @@ Add the Service Provider to `config/app.php`:
 ```php
     'aliases' => [
         // ...
-        'Geometry' => Spinen\Geometry\GeometryFacade::class,
+        'Geo' => Spinen\Geometry\GeometryFacade::class,
     ];
 ```
 
@@ -49,16 +49,28 @@ Add the Service Provider to `config/app.php`:
 
 The Geometry Class exposes parseType methods where "Type" is StudlyCase of the geometry type that geoPHP supports.  Here is a full list...
 
-* parseEwkb
-* parseEwkt
-* parseGeoHash
-* parseGeoJson
-* parseGeoRss
-* parseGoogleGeocode
-* parseGpx
-* parseJson
-* parseKml
-* parseWkb
-* parseWkt
+* parseEwkb($geometry)
+* parseEwkt($geometry)
+* parseGeoHash($geometry)
+* parseGeoJson($geometry)
+* parseGeoRss($geometry)
+* parseGoogleGeocode($geometry)
+* parseGpx($geometry)
+* parseJson($geometry)
+* parseKml($geometry)
+* parseWkb($geometry)
+* parseWkt($geometry)
 
-They each return the geoPHP class for the geometry specified in the data passed in the method.
+The geometries are wrapped in a `Spinen\Geometry\Geometries` namespace with a little sugar to be able to do
+
+* toEwkb()
+* toEwkt()
+* toGeoHash()
+* toGeoJson()
+* toGeoRss()
+* toGoogleGeocode()
+* toGpx()
+* toJson()
+* toKml()
+* toWkb()
+* toWkt()
