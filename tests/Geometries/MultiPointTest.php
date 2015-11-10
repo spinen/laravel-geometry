@@ -48,5 +48,3 @@ class MultiPointTest extends TestCase
         $this->assertInstanceOf(MultiPoint::class, $this->geometry);
     }
 }
-
-
