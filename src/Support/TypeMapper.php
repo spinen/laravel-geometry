@@ -2,6 +2,8 @@
 
 namespace Spinen\Geometry\Support;
 
+use InvalidArgumentException;
+
 /**
  * Class TypeMapper
  *
