@@ -289,5 +289,3 @@ class GeometryTest extends TestCase
         $this->geometry->invalidMethod('data');
     }
 }
-
-
