@@ -71,7 +71,10 @@ class GeometryServiceProviderTest extends TestCase
     {
         $this->application_mock->shouldReceive('make')
                                ->once()
-                               ->with(Geometry::class)
+                               ->withAnyArgs([
+                                   Geometry::class,
+                                   $this->application_mock,
+                               ])
                                ->andReturn($this->geometry_mock);
 
         $this->application_mock->shouldReceive('singleton')
@@ -96,7 +99,6 @@ class GeometryServiceProviderTest extends TestCase
     public function it_boots_the_service()
     {
         $this->assertNull($this->service_provider->boot());
-
         // NOTE: It would be nice to verify that the config got set.
     }
 }
