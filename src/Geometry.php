@@ -5,7 +5,6 @@ namespace Spinen\Geometry;
 use Exception;
 use geoPHP;
 use Illuminate\Contracts\Foundation\Application;
-use InvalidArgumentException;
 use RuntimeException;
 use Spinen\Geometry\Support\TypeMapper;
 
