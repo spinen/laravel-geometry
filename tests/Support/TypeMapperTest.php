@@ -64,5 +64,3 @@ class TypeMapperTest extends TestCase
         $this->mapper->map('InvalidType');
     }
 }
-
-
