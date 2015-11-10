@@ -48,5 +48,3 @@ class MultiPolygonTest extends TestCase
         $this->assertInstanceOf(MultiPolygon::class, $this->geometry);
     }
 }
-
-
