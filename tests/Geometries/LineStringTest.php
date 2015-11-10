@@ -48,5 +48,3 @@ class LineStringTest extends TestCase
         $this->assertInstanceOf(LineString::class, $this->geometry);
     }
 }
-
-
