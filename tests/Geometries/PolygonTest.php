@@ -48,5 +48,3 @@ class PolygonTest extends TestCase
         $this->assertInstanceOf(Polygon::class, $this->geometry);
     }
 }
-
-
