@@ -76,7 +76,7 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
+     * @group                    unit
      * @expectedException RuntimeException
      * @expectedExceptionMessage Call to undefined method Spinen\Geometry\Geometry::invalidMethod().
      */
@@ -87,7 +87,7 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
+     * @group                    unit
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Unknown geometry type of [InvalidType] was provided.
      */
