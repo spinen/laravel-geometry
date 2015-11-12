@@ -6,10 +6,10 @@ use Mockery;
 use Spinen\Geometry\Support\TypeMapper;
 use Spinen\Geometry\TestCase;
 
-class GeometrycollectionTest extends TestCase
+class GeometryCollectionTest extends TestCase
 {
     /**
-     * @var Geometrycollection
+     * @var GeometryCollection
      */
     protected $geometry;
 
@@ -29,7 +29,7 @@ class GeometrycollectionTest extends TestCase
 
         $this->setUpMocks();
 
-        $this->geometry = new Geometrycollection($this->geometry_mock, $this->mapper_mock);
+        $this->geometry = new GeometryCollection($this->geometry_mock, $this->mapper_mock);
     }
 
     private function setUpMocks()
@@ -45,6 +45,6 @@ class GeometrycollectionTest extends TestCase
      */
     public function it_can_be_constructed()
     {
-        $this->assertInstanceOf(Geometrycollection::class, $this->geometry);
+        $this->assertInstanceOf(GeometryCollection::class, $this->geometry);
     }
 }
