@@ -97,6 +97,8 @@ class Geometry
     }
 
     /**
+     * Call geoPHP to load the data.
+     *
      * @param string|object $data
      * @param string|null   $type
      *
