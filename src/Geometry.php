@@ -96,6 +96,22 @@ class Geometry
     }
 
     /**
+     * @param string|object $data
+     * @param string|null   $type
+     *
+     * @return bool|\GeometryCollection|mixed
+     * @throws Exception
+     */
+    protected function loadGeometry($data, $type)
+    {
+        if (is_null($type)) {
+            return $this->geoPhp->load($data);
+        }
+
+        return $this->geoPhp->load($data, $this->mapper->map($type));
+    }
+
+    /**
      * Pass the data to geoPHP to convert to the correct geometry type.
      *
      * @param string $data
@@ -104,9 +120,9 @@ class Geometry
      * @return bool|\GeometryCollection|mixed
      * @throws Exception
      */
-    protected function parse($data, $type)
+    public function parse($data, $type = null)
     {
-        $geometry = $this->geoPhp->load($data, $this->mapper->map($type));
+        $geometry = $this->loadGeometry($data, $type);
 
         $geometry_class = $this->buildGeometryClassName($geometry);
 
