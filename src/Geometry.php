@@ -91,8 +91,12 @@ class Geometry
      *
      * @return string
      */
-    protected function buildGeometryClassName($geometry)
+    public function buildGeometryClassName($geometry)
     {
+        if (is_null($geometry)) {
+            throw new InvalidArgumentException("The geometry object cannot be null when building the name to the proxy class.");
+        }
+
         return __NAMESPACE__ . '\Geometries\\' . get_class($geometry);
     }
 
