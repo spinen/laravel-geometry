@@ -90,6 +90,7 @@ class Geometry
      * @param $geometry
      *
      * @return string
+     * @throws InvalidArgumentException|RuntimeException
      */
     public function buildGeometryClassName($geometry)
     {
@@ -97,7 +98,13 @@ class Geometry
             throw new InvalidArgumentException("The geometry object cannot be null when building the name to the proxy class.");
         }
 
-        return __NAMESPACE__ . '\Geometries\\' . get_class($geometry);
+        $class = __NAMESPACE__ . '\Geometries\\' . get_class($geometry);
+
+        if (class_exists($class)) {
+            return $class;
+        }
+
+        throw new RuntimeException(sprintf("There proxy class [%s] is not defined.", $class));
     }
 
     /**
