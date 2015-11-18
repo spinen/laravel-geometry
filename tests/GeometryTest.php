@@ -4,6 +4,7 @@ namespace Spinen\Geometry;
 
 use geoPHP;
 use Illuminate\Contracts\Foundation\Application as Laravel;
+use InvalidArgumentException;
 use Mockery;
 use RuntimeException;
 use Spinen\Geometry\Geometries\LineString;
@@ -287,5 +288,28 @@ class GeometryTest extends TestCase
     public function it_raises_exception_for_undefined_method()
     {
         $this->geometry->invalidMethod('data');
+    }
+
+    /**
+     * @test
+     * @group unit
+     * @expectedException InvalidArgumentException
+     */
+    public function it_raises_exception_when_the_data_cannot_be_converted()
+    {
+        $this->geo_php_mock->shouldReceive('load')
+                           ->once()
+                           ->withArgs([
+                               'invalid',
+                               'wkt',
+                           ])
+                           ->andReturnNull();
+
+        $this->mapper_mock->shouldReceive('map')
+                          ->once()
+                          ->with('Wkt')
+                          ->andReturn('wkt');
+
+        $this->geometry->parseWkt('invalid');
     }
 }
