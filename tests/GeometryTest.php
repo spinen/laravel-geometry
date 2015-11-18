@@ -100,6 +100,26 @@ class GeometryTest extends TestCase
      * @test
      * @group unit
      */
+    public function it_parses_data_without_a_type()
+    {
+        $polygon = new \Polygon();
+
+        $this->geo_php_mock->shouldReceive('load')
+                           ->once()
+                           ->with('data')
+                           ->andReturn($polygon);
+
+        $this->mapper_mock->shouldReceive('map')
+                          ->never()
+                          ->withAnyArgs();
+
+        $this->geometry->parse('data');
+    }
+
+    /**
+     * @test
+     * @group unit
+     */
     public function it_uses_laravel_to_resolve_classes_if_was_provided()
     {
         $laravel_mock = Mockery::mock(Laravel::class);
