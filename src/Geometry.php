@@ -5,6 +5,7 @@ namespace Spinen\Geometry;
 use Exception;
 use geoPHP;
 use Illuminate\Contracts\Foundation\Application;
+use InvalidArgumentException;
 use RuntimeException;
 use Spinen\Geometry\Support\TypeMapper;
 
@@ -102,11 +103,15 @@ class Geometry
      * @param string $type
      *
      * @return bool|\GeometryCollection|mixed
-     * @throws Exception
+     * @throws Exception|InvalidArgumentException
      */
     protected function parse($data, $type)
     {
         $geometry = $this->geoPhp->load($data, $this->mapper->map($type));
+
+        if (is_null($geometry)) {
+            throw new InvalidArgumentException("Could not parse the supplied data.");
+        }
 
         $geometry_class = $this->buildGeometryClassName($geometry);
 
