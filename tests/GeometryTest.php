@@ -4,6 +4,7 @@ namespace Spinen\Geometry;
 
 use geoPHP;
 use Illuminate\Contracts\Foundation\Application as Laravel;
+use InvalidArgumentException;
 use Mockery;
 use RuntimeException;
 use Spinen\Geometry\Geometries\LineString;
@@ -93,6 +94,26 @@ class GeometryTest extends TestCase
 
             $this->geometry->{'parse' . $method}('data');
         }
+    }
+
+    /**
+     * @test
+     * @group unit
+     */
+    public function it_parses_data_without_a_type()
+    {
+        $polygon = new \Polygon();
+
+        $this->geo_php_mock->shouldReceive('load')
+                           ->once()
+                           ->with('data')
+                           ->andReturn($polygon);
+
+        $this->mapper_mock->shouldReceive('map')
+                          ->never()
+                          ->withAnyArgs();
+
+        $this->geometry->parse('data');
     }
 
     /**
@@ -287,5 +308,48 @@ class GeometryTest extends TestCase
     public function it_raises_exception_for_undefined_method()
     {
         $this->geometry->invalidMethod('data');
+    }
+
+    /**
+     * @test
+     * @group unit
+     * @expectedException InvalidArgumentException
+     */
+    public function it_raises_exception_when_the_data_cannot_be_converted()
+    {
+        $this->geo_php_mock->shouldReceive('load')
+                           ->once()
+                           ->withArgs([
+                               'invalid',
+                               'wkt',
+                           ])
+                           ->andReturnNull();
+
+        $this->mapper_mock->shouldReceive('map')
+                          ->once()
+                          ->with('Wkt')
+                          ->andReturn('wkt');
+
+        $this->geometry->parseWkt('invalid');
+    }
+
+    /**
+     * @test
+     * @group unit
+     * @expectedException InvalidArgumentException
+     */
+    public function it_raises_exception_when_building_name_to_proxy_class_for_null_geometry()
+    {
+        $this->geometry->buildGeometryClassName(null);
+    }
+
+    /**
+     * @test
+     * @group unit
+     * @expectedException RuntimeException
+     */
+    public function it_raises_exception_when_building_name_to_proxy_class_that_does_not_exist()
+    {
+        $this->geometry->buildGeometryClassName($this->geometry);
     }
 }

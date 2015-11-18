@@ -5,6 +5,7 @@ namespace Spinen\Geometry;
 use Exception;
 use geoPHP;
 use Illuminate\Contracts\Foundation\Application;
+use InvalidArgumentException;
 use RuntimeException;
 use Spinen\Geometry\Support\TypeMapper;
 
@@ -89,10 +90,39 @@ class Geometry
      * @param $geometry
      *
      * @return string
+     * @throws InvalidArgumentException|RuntimeException
      */
-    protected function buildGeometryClassName($geometry)
+    public function buildGeometryClassName($geometry)
     {
-        return __NAMESPACE__ . '\Geometries\\' . get_class($geometry);
+        if (is_null($geometry)) {
+            throw new InvalidArgumentException("The geometry object cannot be null when building the name to the proxy class.");
+        }
+
+        $class = __NAMESPACE__ . '\Geometries\\' . get_class($geometry);
+
+        if (class_exists($class)) {
+            return $class;
+        }
+
+        throw new RuntimeException(sprintf("There proxy class [%s] is not defined.", $class));
+    }
+
+    /**
+     * Call geoPHP to load the data.
+     *
+     * @param string|object $data
+     * @param string|null   $type
+     *
+     * @return bool|\GeometryCollection|mixed
+     * @throws Exception
+     */
+    protected function loadGeometry($data, $type)
+    {
+        if (is_null($type)) {
+            return $this->geoPhp->load($data);
+        }
+
+        return $this->geoPhp->load($data, $this->mapper->map($type));
     }
 
     /**
@@ -102,11 +132,15 @@ class Geometry
      * @param string $type
      *
      * @return bool|\GeometryCollection|mixed
-     * @throws Exception
+     * @throws Exception|InvalidArgumentException
      */
-    protected function parse($data, $type)
+    public function parse($data, $type = null)
     {
-        $geometry = $this->geoPhp->load($data, $this->mapper->map($type));
+        $geometry = $this->loadGeometry($data, $type);
+
+        if (is_null($geometry)) {
+            throw new InvalidArgumentException("Could not parse the supplied data.");
+        }
 
         $geometry_class = $this->buildGeometryClassName($geometry);
 
