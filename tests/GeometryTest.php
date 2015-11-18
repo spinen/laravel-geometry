@@ -312,4 +312,14 @@ class GeometryTest extends TestCase
 
         $this->geometry->parseWkt('invalid');
     }
+
+    /**
+     * @test
+     * @group unit
+     * @expectedException InvalidArgumentException
+     */
+    public function it_raises_exception_when_building_name_to_proxy_class_for_null_geometry()
+    {
+        $this->geometry->buildGeometryClassName(null);
+    }
 }
