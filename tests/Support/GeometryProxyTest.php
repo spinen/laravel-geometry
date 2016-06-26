@@ -51,7 +51,7 @@ class GeometryProxyTest extends TestCase
      * @test
      * @group unit
      */
-    public function it_calls_ount_on_geoPHP_geomery_with_the_correct_type_for_the_dynamic_to_methods()
+    public function it_calls_count_on_geoPHP_geometry_with_the_correct_type_for_the_dynamic_to_methods()
     {
         $types = [
             'Ewkb'          => 'ewkb',
