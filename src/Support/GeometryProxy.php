@@ -99,7 +99,7 @@ class GeometryProxy
      *
      * @return mixed
      */
-    function __get($name)
+    public function __get($name)
     {
         // Properties on the geometry
         if (isset($this->toArray()[$name])) {
