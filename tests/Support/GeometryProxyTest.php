@@ -237,6 +237,27 @@ class GeometryProxyTest extends TestCase
         // Is the amount within the margin
         $this->assertTrue(($low_limit <= $acres) && ($acres <= $hi_limit));
     }
+
+    /**
+     * @test
+     * @group unit
+     */
+    public function it_returns_zero_if_polygon_does_not_have_three_points()
+    {
+        $json = '{"type":"Polygon","coordinates":[[[-83.737335814824,32.800152813394],[-83.737339484336,32.800608527036]]]}';
+
+        $this->geometry_mock->shouldReceive('out')
+                            ->once()
+                            ->with('json')
+                            ->andReturn($json);
+
+        $this->mapper_mock->shouldReceive('map')
+                          ->once()
+                          ->with('Json')
+                          ->andReturn('json');
+
+        $this->assertEquals(0, $this->geometry_proxy->acres);
+    }
 }
 
 function method_exists($object, $method_name)
