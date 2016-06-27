@@ -209,7 +209,7 @@ class GeometryProxyTest extends TestCase
         $known_acres = 10.59;
 
         // Upper & lower bonds for the error
-        $hi_limt = $known_acres * (1 + $error);
+        $hi_limit = $known_acres * (1 + $error);
         $low_limit = $known_acres * (1 - $error);
 
         $this->geometry_mock->shouldReceive('out')
@@ -231,7 +231,7 @@ class GeometryProxyTest extends TestCase
         $acres = round(abs($acres), 2);
 
         // Is the amount within the margin
-        $this->assertTrue(($low_limit <= $acres) && ($acres <= $hi_limt));
+        $this->assertTrue(($low_limit <= $acres) && ($acres <= $hi_limit));
     }
 }
 
