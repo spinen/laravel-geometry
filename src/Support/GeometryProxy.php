@@ -203,11 +203,11 @@ class GeometryProxy
         for ($i = 0; $i < $length; $i ++) {
             list($lower_index, $middle_index, $upper_index) = $this->determineCoordinateIndices($i, $length);
 
-            $p1 = $coordinates[$lower_index];
-            $p2 = $coordinates[$middle_index];
-            $p3 = $coordinates[$upper_index];
+            $point1 = $coordinates[$lower_index];
+            $point2 = $coordinates[$middle_index];
+            $point3 = $coordinates[$upper_index];
 
-            $area += ($this->radians($p3[0]) - $this->radians($p1[0])) * sin($this->radians($p2[1]));
+            $area += ($this->radians($point3[0]) - $this->radians($point1[0])) * sin($this->radians($point2[1]));
         }
 
         return $area * 6378137 * 6378137 / 2;
