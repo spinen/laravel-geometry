@@ -113,6 +113,27 @@ class GeometryProxyTest extends TestCase
      * @test
      * @group unit
      */
+    public function it_returns_the_json_when_casted_as_a_string()
+    {
+        $json = '{"first":"value","second":"another"}';
+
+        $this->geometry_mock->shouldReceive('out')
+                            ->once()
+                            ->with('json')
+                            ->andReturn($json);
+
+        $this->mapper_mock->shouldReceive('map')
+                          ->once()
+                          ->with('Json')
+                          ->andReturn('json');
+
+        $this->assertEquals($json, (string)$this->geometry_proxy);
+    }
+
+    /**
+     * @test
+     * @group unit
+     */
     public function it_returns_a_cached_array()
     {
         $this->geometry_mock->shouldReceive('out')
