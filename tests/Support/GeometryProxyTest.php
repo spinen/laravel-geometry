@@ -108,6 +108,69 @@ class GeometryProxyTest extends TestCase
     {
         $this->geometry_proxy->invalidMethod();
     }
+
+    /**
+     * @test
+     * @group unit
+     */
+    public function it_returns_a_cached_array()
+    {
+        $this->geometry_mock->shouldReceive('out')
+                            ->once()
+                            ->with('json')
+                            ->andReturn('{}');
+
+        $this->mapper_mock->shouldReceive('map')
+                          ->once()
+                          ->with('Json')
+                          ->andReturn('json');
+
+        $this->assertTrue(is_array($this->geometry_proxy->toArray()));
+
+        // Make sure that is returns the cache since the mocks only return once
+        $this->assertTrue(is_array($this->geometry_proxy->toArray()));
+    }
+
+    /**
+     * @test
+     * @group unit
+     */
+    public function it_exposes_the_geometry_properties_as_its_own()
+    {
+        $this->geometry_mock->shouldReceive('out')
+                            ->once()
+                            ->with('json')
+                            ->andReturn('{"first":"value","second":"another"}');
+
+        $this->mapper_mock->shouldReceive('map')
+                          ->once()
+                          ->with('Json')
+                          ->andReturn('json');
+
+        $this->assertEquals('value', $this->geometry_proxy->first);
+
+        $this->assertEquals('another', $this->geometry_proxy->second);
+    }
+
+    /**
+     * @test
+     * @group unit
+     * @expectedException RuntimeException
+     */
+    public function it_raises_exception_getting_non_existing_property()
+    {
+        $this->geometry_mock->shouldReceive('out')
+                            ->once()
+                            ->with('json')
+                            ->andReturn('{"first":"value","second":"another"}');
+
+        $this->mapper_mock->shouldReceive('map')
+                          ->once()
+                          ->with('Json')
+                          ->andReturn('json');
+
+        $this->geometry_proxy->missing;
+    }
 }
 
 function method_exists($object, $method_name)
