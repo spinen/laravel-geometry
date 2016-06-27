@@ -112,6 +112,30 @@ class GeometryProxy
     }
 
     /**
+     * Figure out what index to use in the ringArea calculation
+     *
+     * @param $index
+     * @param $length
+     *
+     * @return array
+     */
+    private function determineCoordinateIndices($index, $length)
+    {
+        // i = N-2
+        if ($index === $length - 2) {
+            return [$length - 2, $length - 1, 0];
+        }
+
+        // i = N-1
+        if ($index === $length - 1) {
+            return [$length - 1, 0, 1];
+        }
+
+        // i = 0 to N-3
+        return [$index, $index + 1, $index + 2];
+    }
+
+    /**
      * Calculate the acres
      *
      * @return float
@@ -177,19 +201,7 @@ class GeometryProxy
         }
 
         for ($i = 0; $i < $length; $i ++) {
-            if ($i === $length - 2) {// i = N-2
-                $lower_index = $length - 2;
-                $middle_index = $length - 1;
-                $upper_index = 0;
-            } else if ($i === $length - 1) {// i = N-1
-                $lower_index = $length - 1;
-                $middle_index = 0;
-                $upper_index = 1;
-            } else { // i = 0 to N-3
-                $lower_index = $i;
-                $middle_index = $i + 1;
-                $upper_index = $i + 2;
-            }
+            list($lower_index, $middle_index, $upper_index) = $this->determineCoordinateIndices($i, $length);
 
             $p1 = $coordinates[$lower_index];
             $p2 = $coordinates[$middle_index];
