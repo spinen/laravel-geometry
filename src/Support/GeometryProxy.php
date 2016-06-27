@@ -102,6 +102,16 @@ class GeometryProxy
     }
 
     /**
+     * If using the object as a string, just return the json.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+
+    /**
      * Build array of the object
      *
      * Cache the result, so that we don't decode it on every call.
