@@ -173,7 +173,7 @@ class GeometryProxy
             return $this->cached_area;
         }
 
-        $this->cached_area = 0;
+        $this->cached_area = 0.0;
 
         foreach ($this->coordinates as $coordinate) {
             $this->cached_area += $this->ringArea($coordinate);
@@ -213,7 +213,7 @@ class GeometryProxy
      */
     public function ringArea($coordinates)
     {
-        $area = 0;
+        $area = 0.0;
 
         $length = count($coordinates);
 
