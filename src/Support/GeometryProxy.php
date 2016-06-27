@@ -112,6 +112,96 @@ class GeometryProxy
     }
 
     /**
+     * Calculate the acres
+     *
+     * @return float
+     */
+    public function getAcres()
+    {
+        return $this->getSquareMeters() * 0.000247105381;
+    }
+
+    /**
+     * Calculate the square meters
+     *
+     * @return float
+     */
+    public function getSquareMeters()
+    {
+        $area = 0;
+
+        foreach ($this->coordinates as $coordinate) {
+            $area += $this->ringArea($coordinate);
+        }
+
+        return $area;
+    }
+
+    /**
+     * Convert degrees to radians
+     *
+     * I know that there is a built in function, but I read that it was very slow & to use this.
+     *
+     * @param $degrees
+     *
+     * @return float
+     */
+    private function radians($degrees)
+    {
+        return $degrees * M_PI / 180;
+    }
+
+    /**
+     * Estimate the area of a ring
+     *
+     * Calculate the approximate area of the polygon were it projected onto
+     *     the earth.  Note that this area will be positive if ring is oriented
+     *     clockwise, otherwise it will be negative.
+     *
+     * Reference:
+     * Robert. G. Chamberlain and William H. Duquette, "Some Algorithms for
+     *     Polygons on a Sphere", JPL Publication 07-03, Jet Propulsion
+     *     Laboratory, Pasadena, CA, June 2007 http://trs-new.jpl.nasa.gov/dspace/handle/2014/40409
+     *
+     * @return float
+     * @see https://github.com/mapbox/geojson-area/blob/master/index.js#L55
+     */
+    public function ringArea($coordinates)
+    {
+        $area = 0;
+
+        $length = count($coordinates);
+
+        if ($length <= 2) {
+            return $area;
+        }
+
+        for ($i = 0; $i < $length; $i ++) {
+            if ($i === $length - 2) {// i = N-2
+                $lower_index = $length - 2;
+                $middle_index = $length - 1;
+                $upper_index = 0;
+            } else if ($i === $length - 1) {// i = N-1
+                $lower_index = $length - 1;
+                $middle_index = 0;
+                $upper_index = 1;
+            } else { // i = 0 to N-3
+                $lower_index = $i;
+                $middle_index = $i + 1;
+                $upper_index = $i + 2;
+            }
+
+            $p1 = $coordinates[$lower_index];
+            $p2 = $coordinates[$middle_index];
+            $p3 = $coordinates[$upper_index];
+
+            $area += ($this->radians($p3[0]) - $this->radians($p1[0])) * sin($this->radians($p2[1]));
+        }
+
+        return $area * 6378137 * 6378137 / 2;
+    }
+
+    /**
      * Build array of the object
      *
      * Cache the result, so that we don't decode it on every call.
