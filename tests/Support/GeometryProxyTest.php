@@ -199,8 +199,18 @@ class GeometryProxyTest extends TestCase
      */
     public function it_calculates_the_acres_of_a_polygon()
     {
+        // Since is it an estimate, this is the margin of error
+        $error = 0.01;
+
         // Our office park
         $json = '{"type":"Polygon","coordinates":[[[-83.737335814824,32.800152813394],[-83.737339484336,32.800608527036],[-83.738309865923,32.800563598199],[-83.73831030949,32.799978351717],[-83.738310952694,32.799127904219],[-83.739853535948,32.799151884925],[-83.739986184774,32.799143007967],[-83.739898851499,32.798918827631],[-83.739877597616,32.798741514606],[-83.739977541009,32.798639242758],[-83.740143740248,32.798546524571],[-83.740166108029,32.798490629605],[-83.739979431602,32.798488650057],[-83.738855137995,32.7984641996],[-83.737063785654,32.798419071462],[-83.736299090827,32.798398751092],[-83.736299027099,32.798411979167],[-83.736151777003,32.798409067995],[-83.736143417056,32.79879316208],[-83.736140340166,32.79909395743],[-83.737256307805,32.799111377933],[-83.737259977211,32.799818917076],[-83.737333140303,32.799820651361],[-83.737335814824,32.800152813394]]]}';
+
+        // Known acres for the polygo above
+        $known_acres = 10.59;
+
+        // Upper & lower bonds for the error
+        $hi_limt = $known_acres * (1 + $error);
+        $low_limit = $known_acres * (1 - $error);
 
         $this->geometry_mock->shouldReceive('out')
                             ->once()
@@ -220,8 +230,8 @@ class GeometryProxyTest extends TestCase
         // Just get the acres rounded to 2 places
         $acres = round(abs($acres), 2);
 
-        // Known acres for the area
-        $this->assertEquals(10.59, $acres);
+        // Is the amount within the margin
+        $this->assertTrue(($low_limit <= $acres) && ($acres <= $hi_limt));
     }
 }
 
