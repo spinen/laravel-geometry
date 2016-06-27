@@ -23,15 +23,32 @@ use RuntimeException;
  * @method mixed toKml() Returns the geometry in KML format.
  * @method mixed toWkb() Returns the geometry in WKB format.
  * @method mixed toWkt() Returns the geometry in WKT format.
+ * @property float acres The acres with in +/-1%.
+ * @property array coordinates The points that define the shape.
+ * @property float square_meters The square meters with in +/-1%.
  */
 class GeometryProxy
 {
+    /**
+     * Cache the area to not have to loop through the calculations each time that it is needed.
+     *
+     * @var float
+     */
+    protected $cached_area = null;
+
     /**
      * The geometry to proxy.
      *
      * @var
      */
     protected $geometry;
+
+    /**
+     * Cached array version of the geometry.
+     *
+     * @var array | null
+     */
+    protected $geometry_array = null;
 
     /**
      * Instance of TypeMapper.
@@ -65,7 +82,7 @@ class GeometryProxy
      * @return mixed
      * @throws InvalidArgumentException
      */
-    function __call($name, $arguments)
+    public function __call($name, $arguments)
     {
         // Sugar to make to<Format>() work
         if (preg_match("/^to([A-Z][A-z]*)/u", $name, $parts) && 0 === count($arguments)) {
@@ -78,5 +95,159 @@ class GeometryProxy
         }
 
         throw new RuntimeException(sprintf("Call to undefined method %s::%s().", __CLASS__, $name));
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        // Properties on the geometry
+        if (isset($this->toArray()[$name])) {
+            return $this->toArray()[$name];
+        }
+
+        echo('get' . studly_case($name));
+
+        // Shortcut to the getters
+        if (method_exists($this, 'get' . studly_case($name))) {
+            return $this->{'get' . studly_case($name)}();
+        }
+
+        throw new RuntimeException(sprintf("Undefined property: %s", $name));
+    }
+
+    /**
+     * If using the object as a string, just return the json.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Figure out what index to use in the ringArea calculation
+     *
+     * @param int $index
+     * @param int $length
+     *
+     * @return array
+     */
+    private function determineCoordinateIndices($index, $length)
+    {
+        // i = N-2
+        if ($index === ($length - 2)) {
+            return [$length - 2, $length - 1, 0];
+        }
+
+        // i = N-1
+        if ($index === ($length - 1)) {
+            return [$length - 1, 0, 1];
+        }
+
+        // i = 0 to N-3
+        return [$index, $index + 1, $index + 2];
+    }
+
+    /**
+     * Calculate the acres
+     *
+     * @return float
+     */
+    public function getAcres()
+    {
+        return $this->square_meters * 0.000247105381;
+    }
+
+    /**
+     * Calculate the square meters
+     *
+     * @return float
+     */
+    public function getSquareMeters()
+    {
+        if (!is_null($this->cached_area)) {
+            return $this->cached_area;
+        }
+
+        $this->cached_area = 0.0;
+
+        foreach ($this->coordinates as $coordinate) {
+            $this->cached_area += $this->ringArea($coordinate);
+        }
+
+        return $this->cached_area;
+    }
+
+    /**
+     * Convert degrees to radians
+     *
+     * I know that there is a built in function, but I read that it was very slow & to use this.
+     *
+     * @param $degrees
+     *
+     * @return float
+     */
+    private function radians($degrees)
+    {
+        return $degrees * M_PI / 180;
+    }
+
+    /**
+     * Estimate the area of a ring
+     *
+     * Calculate the approximate area of the polygon were it projected onto
+     *     the earth.  Note that this area will be positive if ring is oriented
+     *     clockwise, otherwise it will be negative.
+     *
+     * Reference:
+     * Robert. G. Chamberlain and William H. Duquette, "Some Algorithms for
+     *     Polygons on a Sphere", JPL Publication 07-03, Jet Propulsion
+     *     Laboratory, Pasadena, CA, June 2007 http://trs-new.jpl.nasa.gov/dspace/handle/2014/40409
+     *
+     * @return float
+     * @see https://github.com/mapbox/geojson-area/blob/master/index.js#L55
+     */
+    public function ringArea($coordinates)
+    {
+        $area = 0.0;
+
+        $length = count($coordinates);
+
+        if ($length <= 2) {
+            return $area;
+        }
+
+        for ($i = 0; $i < $length; $i ++) {
+            list($lower_index, $middle_index, $upper_index) = $this->determineCoordinateIndices($i, $length);
+
+            $point1 = $coordinates[$lower_index];
+            $point2 = $coordinates[$middle_index];
+            $point3 = $coordinates[$upper_index];
+
+            $area += ($this->radians($point3[0]) - $this->radians($point1[0])) * sin($this->radians($point2[1]));
+        }
+
+        return $area * 6378137 * 6378137 / 2;
+    }
+
+    /**
+     * Build array of the object
+     *
+     * Cache the result, so that we don't decode it on every call.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        if (is_null($this->geometry_array)) {
+            $this->geometry_array = (array)json_decode($this->toJson(), true);
+        }
+
+        return $this->geometry_array;
     }
 }
