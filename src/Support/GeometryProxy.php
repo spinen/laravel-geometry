@@ -23,9 +23,9 @@ use RuntimeException;
  * @method mixed toKml() Returns the geometry in KML format.
  * @method mixed toWkb() Returns the geometry in WKB format.
  * @method mixed toWkt() Returns the geometry in WKT format.
- * @property float acres The acres with in +/-1%
- * @property array coordinates The points that define the shape
- * @property float square_meters The square meters with in +/-1%
+ * @property float acres The acres with in +/-1%.
+ * @property array coordinates The points that define the shape.
+ * @property float square_meters The square meters with in +/-1%.
  */
 class GeometryProxy
 {
