@@ -23,6 +23,8 @@ use RuntimeException;
  * @method mixed toKml() Returns the geometry in KML format.
  * @method mixed toWkb() Returns the geometry in WKB format.
  * @method mixed toWkt() Returns the geometry in WKT format.
+ * @property float acres The acres with in +/-1%
+ * @property float square_meters The square meters with in +/-1%
  */
 class GeometryProxy
 {
@@ -79,7 +81,7 @@ class GeometryProxy
      * @return mixed
      * @throws InvalidArgumentException
      */
-    function __call($name, $arguments)
+    public function __call($name, $arguments)
     {
         // Sugar to make to<Format>() work
         if (preg_match("/^to([A-Z][A-z]*)/u", $name, $parts) && 0 === count($arguments)) {
