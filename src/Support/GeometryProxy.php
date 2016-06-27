@@ -223,7 +223,6 @@ class GeometryProxy
     public function toArray()
     {
         if (is_null($this->geometry_array)) {
-
             $this->geometry_array = (array)json_decode($this->toJson(), true);
         }
 
