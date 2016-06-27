@@ -140,12 +140,12 @@ class GeometryProxy
     private function determineCoordinateIndices($index, $length)
     {
         // i = N-2
-        if ($index === $length - 2) {
+        if ($index === ($length - 2)) {
             return [$length - 2, $length - 1, 0];
         }
 
         // i = N-1
-        if ($index === $length - 1) {
+        if ($index === ($length - 1)) {
             return [$length - 1, 0, 1];
         }
 
