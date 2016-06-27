@@ -88,7 +88,7 @@ class GeometryProxy
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return mixed
      */
@@ -114,8 +114,8 @@ class GeometryProxy
     /**
      * Figure out what index to use in the ringArea calculation
      *
-     * @param $index
-     * @param $length
+     * @param int $index
+     * @param int $length
      *
      * @return array
      */
