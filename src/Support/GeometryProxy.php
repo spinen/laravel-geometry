@@ -94,8 +94,16 @@ class GeometryProxy
      */
     function __get($name)
     {
+        // Properties on the geometry
         if (isset($this->toArray()[$name])) {
             return $this->toArray()[$name];
+        }
+
+        echo('get' . studly_case($name));
+
+        // Shortcut to the getters
+        if (method_exists($this, 'get' . studly_case($name))) {
+            return $this->{'get' . studly_case($name)}();
         }
 
         throw new RuntimeException(sprintf("Undefined property: %s", $name));

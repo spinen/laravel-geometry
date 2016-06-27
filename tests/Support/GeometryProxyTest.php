@@ -222,7 +222,7 @@ class GeometryProxyTest extends TestCase
                           ->with('Json')
                           ->andReturn('json');
 
-        $acres = $this->geometry_proxy->getAcres();
+        $acres = $this->geometry_proxy->acres;
 
         // Counter clock-wise, so negative
         $this->assertTrue($acres < 0);
@@ -238,6 +238,10 @@ class GeometryProxyTest extends TestCase
 function method_exists($object, $method_name)
 {
     if ('proxiedMethod' === $method_name) {
+        return true;
+    }
+
+    if ('getAcres' === $method_name) {
         return true;
     }
 }
