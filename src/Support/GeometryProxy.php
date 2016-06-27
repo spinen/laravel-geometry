@@ -27,6 +27,13 @@ use RuntimeException;
 class GeometryProxy
 {
     /**
+     * Cache the area to not have to loop through the calculations each time that it is needed.
+     *
+     * @var float
+     */
+    protected $cached_area = null;
+
+    /**
      * The geometry to proxy.
      *
      * @var
@@ -160,13 +167,17 @@ class GeometryProxy
      */
     public function getSquareMeters()
     {
-        $area = 0;
-
-        foreach ($this->coordinates as $coordinate) {
-            $area += $this->ringArea($coordinate);
+        if (!is_null($this->cached_area)) {
+            return $this->cached_area;
         }
 
-        return $area;
+        $this->cached_area = 0;
+
+        foreach ($this->coordinates as $coordinate) {
+            $this->cached_area += $this->ringArea($coordinate);
+        }
+
+        return $this->cached_area;
     }
 
     /**

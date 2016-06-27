@@ -224,6 +224,10 @@ class GeometryProxyTest extends TestCase
 
         $acres = $this->geometry_proxy->acres;
 
+        // Make sure that cached value is the same
+        // Not sure that we are really testing anything here other than seeing that the coverage shows that it is used.
+        $this->assertEquals($acres, $this->geometry_proxy->acres);
+
         // Counter clock-wise, so negative
         $this->assertTrue($acres < 0);
 
