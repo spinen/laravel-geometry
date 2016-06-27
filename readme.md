@@ -74,3 +74,9 @@ The geometries are wrapped in a `Spinen\Geometry\Geometries` namespace with a li
 * toKml()
 * toWkb()
 * toWkt()
+
+In addition to the above export methods, we have added a ```toArray``` that gives an array from the toJson method.  For convenience, we have exposed all of the properties of the geometry through a getter, so you have direct access to the property without having ask for the keys in the array.
+ 
+## Area of the polygon
+ 
+We are estimating the area in meters squared & acres.  We expect the estimation to be within 1%, so it is not very accurate.  We essentially refactored a js method that Mapbox has in their [geojson-area package](https://github.com/mapbox/geojson-area/blob/v0.2.1/index.js#L55) .  You get the area by calling the ```getAcres``` or ```getSquareMeters```.  There is a shortcut to them as properties, so you can read the "acres" or "square_meters" property.
