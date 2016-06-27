@@ -44,7 +44,7 @@ class GeometryProxy
     protected $geometry;
 
     /**
-     * Cached array version of the geometry
+     * Cached array version of the geometry.
      *
      * @var array | null
      */
