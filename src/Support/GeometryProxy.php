@@ -34,6 +34,13 @@ class GeometryProxy
     protected $geometry;
 
     /**
+     * Cached array version of the geometry
+     *
+     * @var array | null
+     */
+    protected $geometry_array = null;
+
+    /**
      * Instance of TypeMapper.
      *
      * @var TypeMapper
@@ -78,5 +85,36 @@ class GeometryProxy
         }
 
         throw new RuntimeException(sprintf("Call to undefined method %s::%s().", __CLASS__, $name));
+    }
+
+    /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    function __get($name)
+    {
+        if (isset($this->toArray()[$name])) {
+            return $this->toArray()[$name];
+        }
+
+        throw new RuntimeException(sprintf("Undefined property: %s", $name));
+    }
+
+    /**
+     * Build array of the object
+     *
+     * Cache the result, so that we don't decode it on every call.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        if (is_null($this->geometry_array)) {
+
+            $this->geometry_array = (array)json_decode($this->toJson(), true);
+        }
+
+        return $this->geometry_array;
     }
 }
