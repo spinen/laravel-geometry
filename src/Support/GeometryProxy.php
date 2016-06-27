@@ -150,7 +150,7 @@ class GeometryProxy
      */
     public function getAcres()
     {
-        return $this->getSquareMeters() * 0.000247105381;
+        return $this->square_meters * 0.000247105381;
     }
 
     /**

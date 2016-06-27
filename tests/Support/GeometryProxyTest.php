@@ -244,4 +244,8 @@ function method_exists($object, $method_name)
     if ('getAcres' === $method_name) {
         return true;
     }
+
+    if ('getSquareMeters' === $method_name) {
+        return true;
+    }
 }
