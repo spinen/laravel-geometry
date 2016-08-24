@@ -21,8 +21,8 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "illuminate/contracts": "~5.1|~5.2|~5.3",
-        "illuminate/support": "~5.1|~5.2|~5.3",
+        "illuminate/contracts": "5.1.*|5.2.*|5.3.*",
+        "illuminate/support": "5.1.*|5.2.*|5.3.*",
         "phayes/geophp": "~1.2"
     },
     "require-dev": {
