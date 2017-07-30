@@ -27,6 +27,12 @@ Install Geometry:
     $ composer require spinen/laravel-geometry
 ```
 
+### For >= Laravel 5.5, you are done with the Install
+
+The package uses the auto registration feature
+
+### For < Laravel 5.5, you have to register the Service Provider
+
 Add the Service Provider to `config/app.php`:
 
 ```php
