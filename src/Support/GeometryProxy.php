@@ -2,6 +2,7 @@
 
 namespace Spinen\Geometry\Support;
 
+use Geometry;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -39,7 +40,7 @@ class GeometryProxy
     /**
      * The geometry to proxy.
      *
-     * @var
+     * @var Geometry
      */
     protected $geometry;
 
@@ -91,7 +92,9 @@ class GeometryProxy
 
         // Call the method on the class being proxied
         if (method_exists($this->geometry, $name)) {
-            return call_user_func_array([$this->geometry, $name], $arguments);
+            return call_user_func_array(
+                [$this->geometry, $name], array_map([$this, 'exposeRawIfAvailable'], $arguments)
+            );
         }
 
         throw new RuntimeException(sprintf("Call to undefined method %s::%s().", __CLASS__, $name));
@@ -152,6 +155,22 @@ class GeometryProxy
     }
 
     /**
+     * If the object passed in has a getRawGeometry, call it
+     *
+     * @param $argument
+     *
+     * @return mixed
+     */
+    protected function exposeRawIfAvailable($argument)
+    {
+        if (method_exists($argument, 'getRawGeometry')) {
+            return $argument->getRawGeometry();
+        }
+
+        return $argument;
+    }
+
+    /**
      * Calculate the acres
      *
      * @return float
@@ -159,6 +178,16 @@ class GeometryProxy
     public function getAcres()
     {
         return $this->square_meters * 0.000247105381;
+    }
+
+    /**
+     * Expose the underlying Geometry object
+     *
+     * @return Geometry
+     */
+    public function getRawGeometry()
+    {
+        return $this->geometry;
     }
 
     /**
