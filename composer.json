@@ -21,15 +21,15 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "illuminate/contracts": "5.1.*|5.2.*|5.3.*|5.4.*",
-        "illuminate/support": "5.1.*|5.2.*|5.3.*|5.4.*",
+        "illuminate/contracts": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*",
+        "illuminate/support": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*",
         "phayes/geophp": "~1.2"
     },
     "require-dev": {
         "mockery/mockery": "^0.9.1",
         "phpunit/phpunit": "~4.0|~5.0",
         "psy/psysh": "^0.5.1",
-        "satooshi/php-coveralls": "^0.6.1",
+        "satooshi/php-coveralls": "^0.6.1|^1",
         "symfony/var-dumper": "~2.7|~3.0"
     },
     "autoload": {
@@ -42,7 +42,19 @@
             "Spinen\\Geometry\\": "tests"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Spinen\\Geometry\\GeometryServiceProvider"
+            ],
+            "aliases": {
+                "Geo": "Spinen\\Geometry\\GeometryFacade"
+            }
+        }
+    },
     "config": {
-        "preferred-install": "dist"
-    }
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
