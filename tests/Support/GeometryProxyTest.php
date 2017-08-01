@@ -4,6 +4,7 @@ namespace Spinen\Geometry\Support;
 
 use Mockery;
 use Spinen\Geometry\TestCase;
+use stdClass;
 
 class GeometryProxyTest extends TestCase
 {
@@ -96,6 +97,22 @@ class GeometryProxyTest extends TestCase
                             ->andReturn($results);
 
         $this->assertEquals($results, $this->geometry_proxy->proxiedMethod());
+    }
+
+    /**
+     * @test
+     * @group unit
+     */
+    public function it_uses_the_geometry_when_available()
+    {
+        $results = 'results';
+
+        $this->geometry_mock->shouldReceive('proxiedMethod')
+                            ->once()
+                            ->with(StdClass::class)
+                            ->andReturn($results);
+
+        $this->assertEquals($results, $this->geometry_proxy->proxiedMethod($this->geometry_proxy));
     }
 
     /**
@@ -258,6 +275,15 @@ class GeometryProxyTest extends TestCase
 
         $this->assertEquals(0, $this->geometry_proxy->acres);
     }
+
+    /**
+     * @test
+     * @group unit
+     */
+    public function it_returns_the_raw_geometry()
+    {
+        $this->assertInstanceOf(StdClass::class, $this->geometry_proxy->getRawGeometry());
+    }
 }
 
 function method_exists($object, $method_name)
@@ -267,6 +293,10 @@ function method_exists($object, $method_name)
     }
 
     if ('getAcres' === $method_name) {
+        return true;
+    }
+
+    if ('getRawGeometry' === $method_name) {
         return true;
     }
 
