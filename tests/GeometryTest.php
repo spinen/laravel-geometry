@@ -49,7 +49,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_can_be_constructed()
     {
@@ -58,7 +57,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_calls_load_on_geoPHP_with_the_correct_type_for_the_dynamic_parse_methods()
     {
@@ -98,7 +96,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_parses_data_without_a_type()
     {
@@ -118,7 +115,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_uses_laravel_to_resolve_classes_if_was_provided()
     {
@@ -157,7 +153,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_the_wrapped_linestring_class_for_geoPHPs_linestring()
     {
@@ -181,7 +176,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_the_wrapped_multilinestring_class_for_geoPHPs_multilinestring()
     {
@@ -205,7 +199,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_the_wrapped_multipoint_class_for_geoPHPs_multipoint()
     {
@@ -229,7 +222,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_the_wrapped_multipolygon_class_for_geoPHPs_multipolygon()
     {
@@ -253,7 +245,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_the_wrapped_polygon_class_for_geoPHPs_polygon()
     {
@@ -277,7 +268,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_the_wrapped_point_class_for_geoPHPs_point()
     {
@@ -312,7 +302,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      * @expectedException InvalidArgumentException
      */
     public function it_raises_exception_when_the_data_cannot_be_converted()
@@ -335,7 +324,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      * @expectedException InvalidArgumentException
      */
     public function it_raises_exception_when_building_name_to_proxy_class_for_null_geometry()
@@ -345,7 +333,6 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group unit
      * @expectedException RuntimeException
      */
     public function it_raises_exception_when_building_name_to_proxy_class_that_does_not_exist()
