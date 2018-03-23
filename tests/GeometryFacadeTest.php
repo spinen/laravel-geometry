@@ -28,7 +28,6 @@ class GeometryFacadeTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_can_be_constructed()
     {
@@ -37,7 +36,6 @@ class GeometryFacadeTest extends TestCase
 
     /**
      * @test
-     * @group
      */
     public function it_returns_the_correct_aliase_for_the_facade()
     {
