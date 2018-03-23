@@ -71,8 +71,7 @@ class GeometryServiceProviderTest extends TestCase
     }
 
     /**
-     * @tests
-     * @group unit
+     * @test
      */
     public function it_can_be_constructed()
     {
@@ -80,8 +79,7 @@ class GeometryServiceProviderTest extends TestCase
     }
 
     /**
-     * @tests
-     * @group unit
+     * @test
      */
     public function it_registers_the_geometry_mock()
     {
@@ -113,8 +111,7 @@ class GeometryServiceProviderTest extends TestCase
     }
 
     /**
-     * @tests
-     * @group unit
+     * @test
      */
     public function it_boots_the_service()
     {
