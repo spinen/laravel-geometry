@@ -12,7 +12,7 @@ class GeometryFacadeTest extends TestCase
      */
     protected $facade;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

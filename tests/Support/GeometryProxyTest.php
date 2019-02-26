@@ -3,6 +3,7 @@
 namespace Spinen\Geometry\Support;
 
 use Mockery;
+use RuntimeException;
 use Spinen\Geometry\TestCase;
 use stdClass;
 
@@ -23,7 +24,7 @@ class GeometryProxyTest extends TestCase
      */
     protected $mapper_mock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -41,7 +42,6 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_can_be_constructed()
     {
@@ -50,7 +50,6 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_calls_count_on_geoPHP_geometry_with_the_correct_type_for_the_dynamic_to_methods()
     {
@@ -85,7 +84,6 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group
      */
     public function it_returns_the_results_of_a_method_on_the_geometry_if_method_is_not_on_proxy()
     {
@@ -101,7 +99,6 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_uses_the_geometry_when_available()
     {
@@ -117,18 +114,19 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group                    unit
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Call to undefined method Spinen\Geometry\Support\GeometryProxy::invalidMethod().
      */
     public function it_raises_exception_for_undefined_method()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(
+            'Call to undefined method Spinen\Geometry\Support\GeometryProxy::invalidMethod().'
+        );
+
         $this->geometry_proxy->invalidMethod();
     }
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_the_json_when_casted_as_a_string()
     {
@@ -149,7 +147,6 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_a_cached_array()
     {
@@ -171,7 +168,6 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_exposes_the_geometry_properties_as_its_own()
     {
@@ -192,11 +188,11 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group unit
-     * @expectedException RuntimeException
      */
     public function it_raises_exception_getting_non_existing_property()
     {
+        $this->expectException(RuntimeException::class);
+
         $this->geometry_mock->shouldReceive('out')
                             ->once()
                             ->with('json')
@@ -212,7 +208,6 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_calculates_the_acres_of_a_polygon()
     {
@@ -257,7 +252,6 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_zero_if_polygon_does_not_have_three_points()
     {
@@ -278,7 +272,6 @@ class GeometryProxyTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_returns_the_raw_geometry()
     {
