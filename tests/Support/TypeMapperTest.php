@@ -2,6 +2,7 @@
 
 namespace Spinen\Geometry\Support;
 
+use InvalidArgumentException;
 use Mockery;
 use Spinen\Geometry\TestCase;
 
@@ -12,7 +13,7 @@ class TypeMapperTest extends TestCase
      */
     protected $mapper;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -21,7 +22,6 @@ class TypeMapperTest extends TestCase
 
     /**
      * @test
-     * @group unit
      */
     public function it_can_be_constructed()
     {
@@ -30,7 +30,6 @@ class TypeMapperTest extends TestCase
 
     /**
      * @test
-     * @group
      */
     public function it_returns_the_expected_types()
     {
@@ -55,12 +54,12 @@ class TypeMapperTest extends TestCase
 
     /**
      * @test
-     * @group                    unit
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Unknown geometry type of [InvalidType] was provided.
      */
     public function it_raises_exception_for_undefined_parse_type()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unknown geometry type of [InvalidType] was provided.');
+
         $this->mapper->map('InvalidType');
     }
 }

@@ -32,7 +32,7 @@ class GeometryTest extends TestCase
      */
     protected $mapper_mock;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -291,21 +291,22 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @group                    unit
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Call to undefined method Spinen\Geometry\Geometry::invalidMethod().
      */
     public function it_raises_exception_for_undefined_method()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Call to undefined method Spinen\Geometry\Geometry::invalidMethod().');
+
         $this->geometry->invalidMethod('data');
     }
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
      */
     public function it_raises_exception_when_the_data_cannot_be_converted()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $this->geo_php_mock->shouldReceive('load')
                            ->once()
                            ->withArgs([
@@ -324,19 +325,21 @@ class GeometryTest extends TestCase
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
      */
     public function it_raises_exception_when_building_name_to_proxy_class_for_null_geometry()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $this->geometry->buildGeometryClassName(null);
     }
 
     /**
      * @test
-     * @expectedException RuntimeException
      */
     public function it_raises_exception_when_building_name_to_proxy_class_that_does_not_exist()
     {
+        $this->expectException(RuntimeException::class);
+
         $this->geometry->buildGeometryClassName($this->geometry);
     }
 }
