@@ -3,6 +3,7 @@
 namespace Spinen\Geometry\Support;
 
 use Geometry;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -113,8 +114,8 @@ class GeometryProxy
         }
 
         // Shortcut to the getters
-        if (method_exists($this, 'get' . studly_case($name))) {
-            return $this->{'get' . studly_case($name)}();
+        if (method_exists($this, 'get' . Str::studly($name))) {
+            return $this->{'get' . Str::studly($name)}();
         }
 
         throw new RuntimeException(sprintf("Undefined property: %s", $name));
