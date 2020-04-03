@@ -28,7 +28,7 @@ abstract class TestCase extends PHPUnitTestCase
      *
      * @return void
      */
-    protected function mockArrayIterator(MockInterface $mock, array $items)
+    protected function mockArrayIterator(MockInterface $mock, array $items): void
     {
         if ($mock instanceof ArrayAccess) {
             foreach ($items as $key => $val) {
