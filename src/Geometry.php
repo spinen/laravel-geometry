@@ -128,7 +128,7 @@ class Geometry
     /**
      * Pass the data to geoPHP to convert to the correct geometry type.
      *
-     * @param string $data
+     * @param string|object $data
      * @param string $type
      *
      * @return bool|\GeometryCollection|mixed
