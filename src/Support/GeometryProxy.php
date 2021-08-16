@@ -164,7 +164,7 @@ class GeometryProxy
      */
     protected function exposeRawIfAvailable($argument)
     {
-        return (method_exists($argument, 'getRawGeometry'))
+        return ((\is_string($argument) || \is_object($argument)) && method_exists($argument, 'getRawGeometry'))
             ? $argument->getRawGeometry()
             : $argument;
     }
