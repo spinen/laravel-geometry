@@ -53,7 +53,10 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+	"allow-plugins": {
+	    "symfony/thanks": true
+	}
     },
     "minimum-stability": "dev",
     "prefer-stable": true
