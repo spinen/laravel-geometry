@@ -3,7 +3,6 @@
 namespace Spinen\Geometry\Support;
 
 use InvalidArgumentException;
-use Mockery;
 use Spinen\Geometry\TestCase;
 
 class TypeMapperTest extends TestCase
@@ -34,17 +33,17 @@ class TypeMapperTest extends TestCase
     public function it_returns_the_expected_types()
     {
         $types = [
-            'Ewkb'          => 'ewkb',
-            'Ewkt'          => 'ewkt',
-            'GeoHash'       => 'geohash',
-            'GeoJson'       => 'geojson',
-            'GeoRss'        => 'georss',
+            'Ewkb' => 'ewkb',
+            'Ewkt' => 'ewkt',
+            'GeoHash' => 'geohash',
+            'GeoJson' => 'geojson',
+            'GeoRss' => 'georss',
             'GoogleGeocode' => 'google_geocode',
-            'Gpx'           => 'gpx',
-            'Json'          => 'json',
-            'Kml'           => 'kml',
-            'Wkb'           => 'wkb',
-            'Wkt'           => 'wkt',
+            'Gpx' => 'gpx',
+            'Json' => 'json',
+            'Kml' => 'kml',
+            'Wkb' => 'wkb',
+            'Wkt' => 'wkt',
         ];
 
         foreach ($types as $method => $type) {

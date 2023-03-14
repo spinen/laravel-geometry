@@ -2,7 +2,6 @@
 
 namespace Spinen\Geometry;
 
-use Mockery;
 use Spinen\Geometry\Stubs\GeometryFacadeStub;
 
 class GeometryFacadeTest extends TestCase
@@ -44,5 +43,3 @@ class GeometryFacadeTest extends TestCase
         $this->assertEquals('geometry', $facade_stub->publicGetFacadeAccessor());
     }
 }
-
-

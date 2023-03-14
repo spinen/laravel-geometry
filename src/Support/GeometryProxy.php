@@ -2,7 +2,7 @@
 
 namespace Spinen\Geometry\Support;
 
-use Geometry;
+use Geometry as GlobalGeometry;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
@@ -11,8 +11,6 @@ use RuntimeException;
  * Class GeometryProxy
  *
  * Proxy class to "wrap" the geoPHP classes into class that we can add functionality.
- *
- * @package Spinen\Geometry
  *
  * @method mixed toEwkb() Returns the geometry in EWKB format.
  * @method mixed toEwkt() Returns the geometry in EWKT format.
@@ -25,6 +23,7 @@ use RuntimeException;
  * @method mixed toKml() Returns the geometry in KML format.
  * @method mixed toWkb() Returns the geometry in WKB format.
  * @method mixed toWkt() Returns the geometry in WKT format.
+ *
  * @property float acres The acres with in +/-1%.
  * @property array coordinates The points that define the shape.
  * @property float square_meters The square meters with in +/-1%.
@@ -33,39 +32,28 @@ class GeometryProxy
 {
     /**
      * Cache the area to not have to loop through the calculations each time that it is needed.
-     *
-     * @var float
      */
-    protected $cached_area = null;
+    protected ?float $cached_area = null;
 
     /**
      * The geometry to proxy.
-     *
-     * @var Geometry
      */
-    protected $geometry;
+    protected GlobalGeometry $geometry;
 
     /**
      * Cached array version of the geometry.
-     *
-     * @var array | null
      */
-    protected $geometry_array = null;
+    protected ?array $geometry_array = null;
 
     /**
      * Instance of TypeMapper.
-     *
-     * @var TypeMapper
      */
-    protected $mapper;
+    protected TypeMapper $mapper;
 
     /**
      * Polygon constructor.
-     *
-     * @param mixed      $geometry
-     * @param TypeMapper $mapper
      */
-    public function __construct($geometry, TypeMapper $mapper)
+    public function __construct(GlobalGeometry $geometry, TypeMapper $mapper)
     {
         $this->geometry = $geometry;
         $this->mapper = $mapper;
@@ -78,16 +66,12 @@ class GeometryProxy
      * does, then pass the call to the class under proxy.  If a method is defined in our class, then it gets called
      * first, so you can "extend" the classes by defining methods that overwrite the "parent" there.
      *
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return mixed
      * @throws InvalidArgumentException
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments)
     {
         // Sugar to make to<Format>() work
-        if (preg_match("/^to([A-Z][A-z]*)/u", $name, $parts) && 0 === count($arguments)) {
+        if (preg_match('/^to([A-Z][A-z]*)/u', $name, $parts) && 0 === count($arguments)) {
             return $this->geometry->out($this->mapper->map($parts[1]));
         }
 
@@ -98,15 +82,13 @@ class GeometryProxy
             );
         }
 
-        throw new RuntimeException(sprintf("Call to undefined method %s::%s().", __CLASS__, $name));
+        throw new RuntimeException(sprintf('Call to undefined method %s::%s().', __CLASS__, $name));
     }
 
     /**
-     * @param string $name
-     *
-     * @return mixed
+     * Expose the getters
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         // Properties on the geometry
         if (isset($this->toArray()[$name])) {
@@ -114,32 +96,25 @@ class GeometryProxy
         }
 
         // Shortcut to the getters
-        if (method_exists($this, 'get' . Str::studly($name))) {
-            return $this->{'get' . Str::studly($name)}();
+        if (method_exists($this, 'get'.Str::studly($name))) {
+            return $this->{'get'.Str::studly($name)}();
         }
 
-        throw new RuntimeException(sprintf("Undefined property: %s", $name));
+        throw new RuntimeException(sprintf('Undefined property: %s', $name));
     }
 
     /**
      * If using the object as a string, just return the json.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toJson();
     }
 
     /**
      * Figure out what index to use in the ringArea calculation
-     *
-     * @param int $index
-     * @param int $length
-     *
-     * @return array
      */
-    private function determineCoordinateIndices($index, $length)
+    private function determineCoordinateIndices(int $index, int $length): array
     {
         // i = N-2
         if ($index === ($length - 2)) {
@@ -157,10 +132,6 @@ class GeometryProxy
 
     /**
      * If the object passed in has a getRawGeometry, call it
-     *
-     * @param $argument
-     *
-     * @return mixed
      */
     protected function exposeRawIfAvailable($argument)
     {
@@ -171,32 +142,26 @@ class GeometryProxy
 
     /**
      * Calculate the acres
-     *
-     * @return float
      */
-    public function getAcres()
+    public function getAcres(): float
     {
         return $this->square_meters * 0.000247105381;
     }
 
     /**
      * Expose the underlying Geometry object
-     *
-     * @return Geometry
      */
-    public function getRawGeometry()
+    public function getRawGeometry(): GlobalGeometry
     {
         return $this->geometry;
     }
 
     /**
      * Calculate the square meters
-     *
-     * @return float
      */
-    public function getSquareMeters()
+    public function getSquareMeters(): float
     {
-        if (!is_null($this->cached_area)) {
+        if (! is_null($this->cached_area)) {
             return $this->cached_area;
         }
 
@@ -213,12 +178,8 @@ class GeometryProxy
      * Convert degrees to radians
      *
      * I know that there is a built in function, but I read that it was very slow & to use this.
-     *
-     * @param $degrees
-     *
-     * @return float
      */
-    private function radians($degrees)
+    private function radians(float|int $degrees): float
     {
         return $degrees * M_PI / 180;
     }
@@ -235,10 +196,9 @@ class GeometryProxy
      *     Polygons on a Sphere", JPL Publication 07-03, Jet Propulsion
      *     Laboratory, Pasadena, CA, June 2007 http://trs-new.jpl.nasa.gov/dspace/handle/2014/40409
      *
-     * @return float
      * @see https://github.com/mapbox/geojson-area/blob/master/index.js#L55
      */
-    public function ringArea($coordinates)
+    public function ringArea($coordinates): float
     {
         $area = 0.0;
 
@@ -248,8 +208,8 @@ class GeometryProxy
             return $area;
         }
 
-        for ($i = 0; $i < $length; $i ++) {
-            list($lower_index, $middle_index, $upper_index) = $this->determineCoordinateIndices($i, $length);
+        for ($i = 0; $i < $length; $i++) {
+            [$lower_index, $middle_index, $upper_index] = $this->determineCoordinateIndices($i, $length);
 
             $point1 = $coordinates[$lower_index];
             $point2 = $coordinates[$middle_index];
@@ -265,13 +225,11 @@ class GeometryProxy
      * Build array of the object
      *
      * Cache the result, so that we don't decode it on every call.
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         if (is_null($this->geometry_array)) {
-            $this->geometry_array = (array)json_decode($this->toJson(), true);
+            $this->geometry_array = (array) json_decode($this->toJson(), true);
         }
 
         return $this->geometry_array;

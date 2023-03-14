@@ -2,10 +2,10 @@
 
 namespace Spinen\Geometry\Support;
 
+use Geometry as GlobalGeometry;
 use Mockery;
 use RuntimeException;
 use Spinen\Geometry\TestCase;
-use stdClass;
 
 class GeometryProxyTest extends TestCase
 {
@@ -35,7 +35,7 @@ class GeometryProxyTest extends TestCase
 
     private function setUpMocks()
     {
-        $this->geometry_mock = Mockery::mock(StdClass::class);
+        $this->geometry_mock = Mockery::mock(GlobalGeometry::class);
 
         $this->mapper_mock = Mockery::mock(TypeMapper::class);
     }
@@ -54,31 +54,31 @@ class GeometryProxyTest extends TestCase
     public function it_calls_count_on_geoPHP_geometry_with_the_correct_type_for_the_dynamic_to_methods()
     {
         $types = [
-            'Ewkb'          => 'ewkb',
-            'Ewkt'          => 'ewkt',
-            'GeoHash'       => 'geohash',
-            'GeoJson'       => 'geojson',
-            'GeoRss'        => 'georss',
+            'Ewkb' => 'ewkb',
+            'Ewkt' => 'ewkt',
+            'GeoHash' => 'geohash',
+            'GeoJson' => 'geojson',
+            'GeoRss' => 'georss',
             'GoogleGeocode' => 'google_geocode',
-            'Gpx'           => 'gpx',
-            'Json'          => 'json',
-            'Kml'           => 'kml',
-            'Wkb'           => 'wkb',
-            'Wkt'           => 'wkt',
+            'Gpx' => 'gpx',
+            'Json' => 'json',
+            'Kml' => 'kml',
+            'Wkb' => 'wkb',
+            'Wkt' => 'wkt',
         ];
 
         foreach ($types as $method => $type) {
             $this->geometry_mock->shouldReceive('out')
                                 ->once()
                                 ->with($type)
-                                ->andReturn('converted geomerty');
+                                ->andReturn('converted geometry');
 
             $this->mapper_mock->shouldReceive('map')
                               ->once()
                               ->with($method)
                               ->andReturn($type);
 
-            $this->geometry_proxy->{'to' . $method}();
+            $this->geometry_proxy->{'to'.$method}();
         }
     }
 
@@ -106,7 +106,7 @@ class GeometryProxyTest extends TestCase
 
         $this->geometry_mock->shouldReceive('proxiedMethod')
                             ->once()
-                            ->with(StdClass::class)
+                            ->with(GlobalGeometry::class)
                             ->andReturn($results);
 
         $this->assertEquals($results, $this->geometry_proxy->proxiedMethod($this->geometry_proxy));
@@ -142,7 +142,7 @@ class GeometryProxyTest extends TestCase
                           ->with('Json')
                           ->andReturn('json');
 
-        $this->assertEquals($json, (string)$this->geometry_proxy);
+        $this->assertEquals($json, (string) $this->geometry_proxy);
     }
 
     /**
@@ -275,7 +275,7 @@ class GeometryProxyTest extends TestCase
      */
     public function it_returns_the_raw_geometry()
     {
-        $this->assertInstanceOf(StdClass::class, $this->geometry_proxy->getRawGeometry());
+        $this->assertInstanceOf(GlobalGeometry::class, $this->geometry_proxy->getRawGeometry());
     }
 }
 
