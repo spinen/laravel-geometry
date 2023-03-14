@@ -6,8 +6,6 @@ use Spinen\Geometry\GeometryFacade;
 
 /**
  * Class GeometryFacadeStub
- *
- * @package Spinen\Geometry\Stubs
  */
 class GeometryFacadeStub extends GeometryFacade
 {
