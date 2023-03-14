@@ -122,5 +122,5 @@ class GeometryServiceProviderTest extends TestCase
 
 function config_path($file)
 {
-    return 'path/to/config/' . $file;
+    return 'path/to/config/'.$file;
 }

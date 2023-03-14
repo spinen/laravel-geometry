@@ -3,16 +3,16 @@
 namespace Spinen\Geometry;
 
 use Exception;
+use Geometry as GlobalGeometry;
 use geoPHP;
 use Illuminate\Contracts\Foundation\Application;
 use InvalidArgumentException;
 use RuntimeException;
+use Spinen\Geometry\Support\GeometryProxy;
 use Spinen\Geometry\Support\TypeMapper;
 
 /**
  * Class Geometry
- *
- * @package Spinen\Geometry
  *
  * @method mixed parseEwkb(mixed $data) Parses data into EWKB format.
  * @method mixed parseEwkt(mixed $data) Parses data into EWKT format.
@@ -30,33 +30,23 @@ class Geometry
 {
     /**
      * The Laravel application.
-     *
-     * @var Application|null
      */
-    protected $app;
+    protected ?Application $app;
 
     /**
      * Instance of geoPHP.
-     *
-     * @var geoPHP
      */
-    protected $geoPhp;
+    protected geoPHP $geoPhp;
 
     /**
      * Instance of TypeMapper.
-     *
-     * @var TypeMapper
      */
-    protected $mapper;
+    protected TypeMapper $mapper;
 
     /**
      * Geometry constructor.
-     *
-     * @param geoPHP           $geoPhp
-     * @param TypeMapper       $mapper
-     * @param Application|null $app
      */
-    public function __construct(geoPHP $geoPhp, TypeMapper $mapper, $app = null)
+    public function __construct(geoPHP $geoPhp, TypeMapper $mapper, ?Application $app = null)
     {
         $this->geoPhp = $geoPhp;
         $this->mapper = $mapper;
@@ -68,87 +58,74 @@ class Geometry
      *
      * Allow parseStudlyCaseOfType i.e. parseWkt or parseGeoJson to be called & mapped to the load method.
      *
-     * @param string $name Name of the undefined method
-     * @param array  $arguments
-     *
-     * @return bool|\GeometryCollection|mixed
      * @throws RuntimeException
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): mixed
     {
         // Sugar to make parse<Format>() work
-        if (preg_match("/^parse([A-Z][A-z]*)/u", $name, $parts) && 1 === count($arguments)) {
+        if (preg_match('/^parse([A-Z][A-z]*)/u', $name, $parts) && 1 === count($arguments)) {
             return $this->parse($arguments[0], $parts[1]);
         }
 
-        throw new RuntimeException(sprintf("Call to undefined method %s::%s().", __CLASS__, $name));
+        throw new RuntimeException(sprintf('Call to undefined method %s::%s().', __CLASS__, $name));
     }
 
     /**
      * Build the name to the proxy geometry class.
      *
-     * @param $geometry
-     *
-     * @return string
      * @throws InvalidArgumentException|RuntimeException
      */
-    public function buildGeometryClassName($geometry)
+    public function buildGeometryClassName(?GlobalGeometry $geometry): string
     {
         if (is_null($geometry)) {
-            throw new InvalidArgumentException("The geometry object cannot be null when building the name to the proxy class.");
+            throw new InvalidArgumentException('The geometry object cannot be null when building the name to the proxy class.');
         }
 
-        $class = __NAMESPACE__ . '\Geometries\\' . get_class($geometry);
+        $class = __NAMESPACE__.'\Geometries\\'.get_class($geometry);
 
         if (class_exists($class)) {
             return $class;
         }
 
-        throw new RuntimeException(sprintf("There proxy class [%s] is not defined.", $class));
+        throw new RuntimeException(sprintf('There proxy class [%s] is not defined.', $class));
     }
 
     /**
      * Call geoPHP to load the data.
      *
-     * @param string|object $data
-     * @param string|null   $type
-     *
-     * @return bool|\GeometryCollection|mixed
-     * @throws Exception
+     * @throws InvalidArgumentException|Exception
      */
-    protected function loadGeometry($data, $type)
+    protected function loadGeometry(object|string $data, ?string $type): GlobalGeometry
     {
-        if (is_null($type)) {
-            return $this->geoPhp->load($data);
+        $geometry = is_null($type)
+            ? $this->geoPhp->load($data)
+            : $this->geoPhp->load($data, $this->mapper->map($type));
+
+        if (! $geometry) {
+            throw new InvalidArgumentException('Could not parse the supplied data.');
         }
 
-        return $this->geoPhp->load($data, $this->mapper->map($type));
+        return $geometry;
     }
 
     /**
      * Pass the data to geoPHP to convert to the correct geometry type.
      *
-     * @param string|object $data
-     * @param string $type
-     *
-     * @return bool|\GeometryCollection|mixed
-     * @throws Exception|InvalidArgumentException
+     * @throws InvalidArgumentException|Exception
      */
-    public function parse($data, $type = null)
+    public function parse(object|string $data, ?string $type = null): GeometryProxy
     {
         $geometry = $this->loadGeometry($data, $type);
 
         if (is_null($geometry)) {
-            throw new InvalidArgumentException("Could not parse the supplied data.");
+            throw new InvalidArgumentException('Could not parse the supplied data.');
         }
 
         $geometry_class = $this->buildGeometryClassName($geometry);
 
         // If running in Laravel, then use the IoC
-        if (!is_null($this->app)) {
-            return $this->app->make($geometry_class, [$geometry, $this->mapper]);
-        }
-
-        return new $geometry_class($geometry, $this->mapper);
+        return is_null($this->app)
+            ? new $geometry_class($geometry, $this->mapper)
+            : $this->app->make($geometry_class, [$geometry, $this->mapper]);
     }
 }

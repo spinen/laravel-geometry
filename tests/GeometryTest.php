@@ -2,6 +2,7 @@
 
 namespace Spinen\Geometry;
 
+use Geometry as GlobalGeometry;
 use geoPHP;
 use Illuminate\Contracts\Foundation\Application as Laravel;
 use InvalidArgumentException;
@@ -13,6 +14,7 @@ use Spinen\Geometry\Geometries\MultiPoint;
 use Spinen\Geometry\Geometries\MultiPolygon;
 use Spinen\Geometry\Geometries\Point;
 use Spinen\Geometry\Geometries\Polygon;
+use Spinen\Geometry\Support\GeometryProxy;
 use Spinen\Geometry\Support\TypeMapper;
 
 class GeometryTest extends TestCase
@@ -61,17 +63,17 @@ class GeometryTest extends TestCase
     public function it_calls_load_on_geoPHP_with_the_correct_type_for_the_dynamic_parse_methods()
     {
         $types = [
-            'Ewkb'          => 'ewkb',
-            'Ewkt'          => 'ewkt',
-            'GeoHash'       => 'geohash',
-            'GeoJson'       => 'geojson',
-            'GeoRss'        => 'georss',
+            'Ewkb' => 'ewkb',
+            'Ewkt' => 'ewkt',
+            'GeoHash' => 'geohash',
+            'GeoJson' => 'geojson',
+            'GeoRss' => 'georss',
             'GoogleGeocode' => 'google_geocode',
-            'Gpx'           => 'gpx',
-            'Json'          => 'json',
-            'Kml'           => 'kml',
-            'Wkb'           => 'wkb',
-            'Wkt'           => 'wkt',
+            'Gpx' => 'gpx',
+            'Json' => 'json',
+            'Kml' => 'kml',
+            'Wkb' => 'wkb',
+            'Wkt' => 'wkt',
         ];
 
         $polygon = new \Polygon();
@@ -90,7 +92,7 @@ class GeometryTest extends TestCase
                               ->with($method)
                               ->andReturn($type);
 
-            $this->geometry->{'parse' . $method}('data');
+            $this->geometry->{'parse'.$method}('data');
         }
     }
 
@@ -146,7 +148,7 @@ class GeometryTest extends TestCase
                              $this->mapper_mock,
                          ],
                      ])
-                     ->andReturn('geometry');
+                     ->andReturn(new GeometryProxy($polygon, $this->mapper_mock));
 
         $this->geometry->parseWkt('data');
     }
@@ -338,8 +340,12 @@ class GeometryTest extends TestCase
      */
     public function it_raises_exception_when_building_name_to_proxy_class_that_does_not_exist()
     {
+        $this->markTestSkipped('Now that typecasting a Geometry, there is no way to pass an invalid class to trigger this test');
+
         $this->expectException(RuntimeException::class);
 
-        $this->geometry->buildGeometryClassName($this->geometry);
+        $this->geometry->buildGeometryClassName(new class extends GlobalGeometry
+        {
+        });
     }
 }

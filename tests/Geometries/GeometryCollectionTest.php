@@ -2,6 +2,7 @@
 
 namespace Spinen\Geometry\Geometries;
 
+use Geometry as GlobalGeometry;
 use Mockery;
 use Spinen\Geometry\Support\TypeMapper;
 use Spinen\Geometry\TestCase;
@@ -34,13 +35,14 @@ class GeometryCollectionTest extends TestCase
 
     private function setUpMocks()
     {
-        $this->geometry_mock = Mockery::mock(StdClass::class);
+        $this->geometry_mock = Mockery::mock(GlobalGeometry::class);
 
         $this->mapper_mock = Mockery::mock(TypeMapper::class);
     }
 
     /**
      * @test
+     *
      * @group unit
      */
     public function it_can_be_constructed()

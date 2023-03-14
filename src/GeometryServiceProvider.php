@@ -8,8 +8,6 @@ use Spinen\Geometry\Support\TypeMapper;
 
 /**
  * Class GeometryServiceProvider
- *
- * @package Spinen\Geometry
  */
 class GeometryServiceProvider extends ServiceProvider
 {
