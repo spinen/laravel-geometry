@@ -144,8 +144,8 @@ class GeometryTest extends TestCase
                      ->withArgs([
                          'Spinen\Geometry\Geometries\Polygon',
                          [
-                             $polygon,
-                             $this->mapper_mock,
+                             'geometry' => $polygon,
+                             'mapper' => $this->mapper_mock,
                          ],
                      ])
                      ->andReturn(new GeometryProxy($polygon, $this->mapper_mock));
@@ -340,12 +340,144 @@ class GeometryTest extends TestCase
      */
     public function it_raises_exception_when_building_name_to_proxy_class_that_does_not_exist()
     {
-        $this->markTestSkipped('Now that typecasting a Geometry, there is no way to pass an invalid class to trigger this test');
-
         $this->expectException(RuntimeException::class);
 
         $this->geometry->buildGeometryClassName(new class extends GlobalGeometry
         {
+            public function area()
+            {
+                // Just a stub for area() method.
+            }
+
+            public function boundary()
+            {
+                // Just a stub for boundary() method.
+            }
+
+            public function centroid()
+            {
+                // Just a stub for centroid() method.
+            }
+
+            public function length()
+            {
+                // Just a stub for length() method.
+            }
+
+            public function y()
+            {
+                // Just a stub for y() method.
+            }
+
+            public function x()
+            {
+                // Just a stub for x() method.
+            }
+
+            public function numGeometries()
+            {
+                // Just a stub for numGeometries() method.
+            }
+
+            public function geometryN($n)
+            {
+                // Just a stub for geometryN() method.
+            }
+
+            public function startPoint()
+            {
+                // Just a stub for startPoint() method.
+            }
+
+            public function endPoint()
+            {
+                // Just a stub for endPoint() method.
+            }
+
+            public function isRing()
+            {
+                // Just a stub for isRing() method.
+            }
+
+            public function isClosed()
+            {
+                // Just a stub for isClosed() method.
+            }
+
+            public function numPoints()
+            {
+                // Just a stub for numPoints() method.
+            }
+
+            public function pointN($n)
+            {
+                // Just a stub for pointN() method.
+            }
+
+            public function exteriorRing()
+            {
+                // Just a stub for exteriorRing() method.
+            }
+
+            public function numInteriorRings()
+            {
+                // Just a stub for numInteriorRings() method.
+            }
+
+            public function interiorRingN($n)
+            {
+                // Just a stub for interiorRingN() method.
+            }
+
+            public function dimension()
+            {
+                // Just a stub for dimension() method.
+            }
+
+            public function equals($geom)
+            {
+                // Just a stub for equals() method.
+            }
+
+            public function isEmpty()
+            {
+                // Just a stub for isEmpty() method.
+            }
+
+            public function isSimple()
+            {
+                // Just a stub for isSimple() method.
+            }
+
+            public function getBBox()
+            {
+                // Just a stub for getBBox() method.
+            }
+
+            public function asArray()
+            {
+                // Just a stub for asArray() method.
+            }
+
+            public function getPoints()
+            {
+                // Just a stub for getPoints() method.
+            }
+
+            public function explode()
+            {
+                // Just a stub for explode() method.
+            }
+
+            public function greatCircleLength()
+            {
+                // Just a stub for greatCircleLength() method.
+            }
+
+            public function haversineLength()
+            {
+                // Just a stub for haversineLength() method.
+            }
         });
     }
 }
