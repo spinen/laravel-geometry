@@ -126,6 +126,6 @@ class Geometry
         // If running in Laravel, then use the IoC
         return is_null($this->app)
             ? new $geometry_class($geometry, $this->mapper)
-            : $this->app->make($geometry_class, [$geometry, $this->mapper]);
+            : $this->app->make($geometry_class, ['geometry' => $geometry, 'mapper' => $this->mapper]);
     }
 }
